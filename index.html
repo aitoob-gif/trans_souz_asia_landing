@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ОАО «Транс Союз Азия» | Автобусные туры и аренда автобусов</title>
+  
+  <!-- Политика безопасности контента (CSP) -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; font-src 'self' https://cdnjs.cloudflare.com; connect-src 'self' https://*.supabase.co;">
+
+  <!-- Иконки FontAwesome и Supabase Client -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    :root {
+      --primary: #1e40af;
+      --primary-hover: #1d4ed8;
+      --accent: #f59e0b;
+      --dark: #0f172a;
+      --light: #f8fafc;
+      --gray: #64748b;
+      --light-gray: #f1f5f9;
+      --radius: 12px;
+      --shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background-color: var(--light);
+      color: var(--dark);
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* Header */
+    header {
+      background-color: #ffffff;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 0;
+    }
+
+    .logo {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    nav a {
+      margin-left: 20px;
+      text-decoration: none;
+      color: var(--dark);
+      font-weight: 500;
+    }
+
+    .btn-auth-nav {
+      background: var(--primary);
+      color: #fff !important;
+      padding: 8px 16px;
+      border-radius: 6px;
+    }
+
+    /* Hero */
+    .hero {
+      background: linear-gradient(rgba(15, 23, 42, 0.7), rgba(15, 23, 42, 0.7)), url('https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?q=80&w=1200') center/cover;
+      color: white;
+      padding: 100px 0;
+      text-align: center;
+    }
+
+    .hero h1 { font-size: 2.5rem; margin-bottom: 15px; }
+    .hero p { font-size: 1.2rem; margin-bottom: 25px; }
+
+    /* Auth & Dashboard Cards */
+    .card-box {
+      max-width: 450px;
+      margin: 40px auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .form-group { margin-bottom: 15px; }
+    .form-group label { display: block; margin-bottom: 5px; font-size: 0.9rem; }
+    .form-group input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 12px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .btn:hover { background: var(--primary-hover); }
+
+    /* Footer */
+    footer {
+      background: var(--dark);
+      color: white;
+      padding: 30px 0;
+      margin-top: 60px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="container header-content">
+      <a href="#" class="logo">ОАО «Транс Союз Азия»</a>
+      <nav>
+        <a href="#tours">Туры</a>
+        <a href="#auth-section" class="btn-auth-nav" id="nav-auth-btn">Войти</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container">
+      <h1>Комфортные автобусные туры из Бишкека</h1>
+      <p>Пассажирские перевозки и аренда автобусов по Кыргызстану и СНГ</p>
+    </div>
+  </section>
+
+  <!-- Auth Section -->
+  <section id="auth-section" class="container">
+    <div class="card-box">
+      <h2 id="auth-title" style="text-align: center; margin-bottom: 20px;">Вход в кабинет</h2>
+      <form id="auth-form">
+        <div class="form-group">
+          <label for="auth-email">Email</label>
+          <input type="email" id="auth-email" required placeholder="user@example.com">
+        </div>
+        <div class="form-group">
+          <label for="auth-password">Пароль</label>
+          <input type="password" id="auth-password" required placeholder="••••••••">
+        </div>
+        <button type="submit" id="btn-submit" class="btn">Войти</button>
+      </form>
+      <div style="text-align: center; margin-top: 15px;">
+        <a href="#" id="toggle-auth-mode" style="color: var(--gray); font-size: 0.9rem;">Нет аккаунта? Зарегистрироваться</a>
+      </div>
+      <div id="auth-message" style="margin-top: 15px; text-align: center; font-size: 0.9rem; min-height: 20px;"></div>
+    </div>
+  </section>
+
+  <!-- Dashboard Section (Hidden by default) -->
+  <section id="dashboard-section" class="container" style="display: none;">
+    <div class="card-box" style="max-width: 600px;">
+      <h2>Личный кабинет</h2>
+      <p style="margin-top: 10px;">Здравствуйте, <strong id="user-email-display"></strong>!</p>
+      
+      <div style="margin: 20px 0; padding: 15px; background: var(--light-gray); border-radius: 8px;">
+        <h3>Ваши бронирования</h3>
+        <p style="color: var(--gray); font-size: 0.9rem; margin-top: 5px;">Активных бронирований пока нет.</p>
+      </div>
+
+      <button id="btn-logout" class="btn" style="background: #ef4444;">Выйти из аккаунта</button>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <p>&copy; 2026 ОАО «Транс Союз Азия». Все права защищены.</p>
+    </div>
+  </footer>
+
+  <!-- App Script -->
+  <script>
+    // 1. Инициализация Supabase (Укажите ваши URL и ANON KEY)
+    const SUPABASE_URL = 'https://YOUR_SUPABASE_URL.supabase.co';
+    const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+    
+    // Безопасная инициализация клиента
+    const supabase = (SUPABASE_URL.indexOf('YOUR_SUPABASE') === -1) 
+      ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) 
+      : null;
+
+    let isSignUpMode = false;
+
+    // DOM Элементы
+    const authSection = document.getElementById('auth-section');
+    const dashboardSection = document.getElementById('dashboard-section');
+    const authForm = document.getElementById('auth-form');
+    const authTitle = document.getElementById('auth-title');
+    const btnSubmit = document.getElementById('btn-submit');
+    const toggleAuthMode = document.getElementById('toggle-auth-mode');
+    const authMessage = document.getElementById('auth-message');
+    const userEmailDisplay = document.getElementById('user-email-display');
+    const btnLogout = document.getElementById('btn-logout');
+    const navAuthBtn = document.getElementById('nav-auth-btn');
+
+    // Переключатель формы (Вход / Регистрация)
+    toggleAuthMode.addEventListener('click', (e) => {
+      e.preventDefault();
+      isSignUpMode = !isSignUpMode;
+      authTitle.textContent = isSignUpMode ? 'Регистрация' : 'Вход в кабинет';
+      btnSubmit.textContent = isSignUpMode ? 'Зарегистрироваться' : 'Войти';
+      toggleAuthMode.textContent = isSignUpMode ? 'Уже есть аккаунт? Войти' : 'Нет аккаунта? Зарегистрироваться';
+      authMessage.textContent = '';
+    });
+
+    // Проверка активной сессии
+    async function checkSession() {
+      if (!supabase) return;
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        renderDashboard(session.user);
+      } else {
+        renderAuth();
+      }
+    }
+
+    function renderDashboard(user) {
+      authSection.style.display = 'none';
+      dashboardSection.style.display = 'block';
+      userEmailDisplay.textContent = user.email; // Защита от XSS via textContent
+      navAuthBtn.textContent = 'Кабинет';
+    }
+
+    function renderAuth() {
+      authSection.style.display = 'block';
+      dashboardSection.style.display = 'none';
+      navAuthBtn.textContent = 'Войти';
+    }
+
+    // Обработка отправки формы
+    authForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      authMessage.style.color = '#000';
+      authMessage.textContent = 'Загрузка...';
+
+      if (!supabase) {
+        authMessage.style.color = 'red';
+        authMessage.textContent = 'Укажите ключи Supabase в JS-коде!';
+        return;
+      }
+
+      const email = document.getElementById('auth-email').value;
+      const password = document.getElementById('auth-password').value;
+
+      if (isSignUpMode) {
+        const { error } = await supabase.auth.signUp({ email, password });
+        if (error) {
+          authMessage.style.color = 'red';
+          authMessage.textContent = error.message;
+        } else {
+          authMessage.style.color = 'green';
+          authMessage.textContent = 'Успешно! Проверьте почту для подтверждения.';
+        }
+      } else {
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) {
+          authMessage.style.color = 'red';
+          authMessage.textContent = error.message;
+        } else {
+          renderDashboard(data.user);
+        }
+      }
+    });
+
+    // Выход
+    btnLogout.addEventListener('click', async () => {
+      if (supabase) await supabase.auth.signOut();
+      renderAuth();
+    });
+
+    // Инициализация при загрузке
+    checkSession();
+  </script>
+</body>
+</html>
